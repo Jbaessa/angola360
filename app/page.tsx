@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import LandingNav        from '@/components/Landing/LandingNav'
-import HeroSection       from '@/components/Landing/HeroSection'
-import DestinosSection   from '@/components/Landing/DestinosSection'
+import LandingNav           from '@/components/Landing/LandingNav'
+import HeroSection           from '@/components/Landing/HeroSection'
+import TiposTurismoSection  from '@/components/Landing/TiposTurismoSection'
+import DestinosSection       from '@/components/Landing/DestinosSection'
 import EstatisticasSection from '@/components/Landing/EstatisticasSection'
 import ParceirosSection  from '@/components/Landing/ParceirosSection'
 import CTASection        from '@/components/Landing/CTASection'
@@ -30,6 +31,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white text-[#1A1A1A]">
       <LandingNav />
       <HeroSection />
+      <TiposTurismoSection />
       <DestinosSection />
       <EstatisticasSection />
       <ParceirosSection />

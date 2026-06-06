@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   MapPin, Clock, Star, X, Users, Navigation,
   TreePine, Waves, Building2, Landmark, Drum, Globe,
+  Wind, Mountain,
   type LucideIcon,
 } from 'lucide-react'
 import { POIS, CAT_CONFIG } from '@/data/pois'
@@ -14,20 +15,18 @@ import { useUnsplashPhotos } from '@/lib/use-unsplash'
 import { useApp } from '@/lib/store'
 import { useT } from '@/lib/translations'
 
-const TOP_IDS = [1, 16, 5, 6, 3, 2]
-
-const TOP_DESTINOS = TOP_IDS
-  .map(id => POIS.find(p => p.id === id)!)
-  .filter(Boolean)
-
 const CAT_ICONS: Record<string, LucideIcon> = {
   natureza: TreePine,
   praia:    Waves,
   cidade:   Building2,
   historia: Landmark,
   cultura:  Drum,
+  surf:     Wind,
+  aventura: Mountain,
   all:      Globe,
 }
+
+const TABS = ['all', 'natureza', 'surf', 'aventura', 'historia', 'cultura', 'praia', 'cidade']
 
 type Poi = typeof POIS[0]
 
@@ -308,8 +307,17 @@ function DestinoCard({
 /* ── Section ────────────────────────────────────────────────────── */
 export default function DestinosSection() {
   const t = useT()
-  const photoUrls = useUnsplashPhotos(TOP_DESTINOS.map(p => `${p.name} Angola`))
+  const { language } = useApp()
+  const [activeTab, setActiveTab] = useState('all')
   const [selected, setSelected] = useState<{ poi: Poi; photoUrl: string | null } | null>(null)
+
+  const displayedPOIs = (
+    activeTab === 'all'
+      ? [...POIS].sort((a, b) => b.rating - a.rating).slice(0, 6)
+      : POIS.filter(p => p.cat === activeTab).sort((a, b) => b.rating - a.rating).slice(0, 6)
+  )
+
+  const photoUrls = useUnsplashPhotos(displayedPOIs.map(p => `${p.name} Angola`))
 
   return (
     <section id="destinos" className="py-24 bg-[#F8F6F1]">
@@ -320,7 +328,7 @@ export default function DestinosSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14"
+          className="text-center mb-10"
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="h-px w-10 bg-[#C9A84C]/50" />
@@ -335,14 +343,40 @@ export default function DestinosSection() {
           </p>
         </motion.div>
 
+        {/* Tab bar */}
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-8 scrollbar-hide">
+          {TABS.map(key => {
+            const cfg = CAT_CONFIG[key]
+            const label = key === 'all'
+              ? t('cat_all')
+              : language === 'en' ? cfg?.labelEn : cfg?.label
+            const TabIcon = CAT_ICONS[key] ?? Globe
+            const isActive = activeTab === key
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm whitespace-nowrap transition-all flex-shrink-0 border ${
+                  isActive
+                    ? 'bg-[#C9A84C] text-[#080d18] border-[#C9A84C] font-semibold'
+                    : 'border-[#C9A84C]/30 text-[#C9A84C] hover:bg-[#C9A84C]/10'
+                }`}
+              >
+                <TabIcon size={13} strokeWidth={1.75} />
+                <span>{label}</span>
+              </button>
+            )
+          })}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {TOP_DESTINOS.map((poi, i) => (
+          {displayedPOIs.map((poi, i) => (
             <DestinoCard
               key={poi.id}
               poi={poi}
               index={i}
-              photoUrl={photoUrls[i]}
-              onOpen={() => setSelected({ poi, photoUrl: photoUrls[i] })}
+              photoUrl={photoUrls[i] ?? null}
+              onOpen={() => setSelected({ poi, photoUrl: photoUrls[i] ?? null })}
             />
           ))}
         </div>
@@ -354,7 +388,8 @@ export default function DestinosSection() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mt-12"
         >
-          <Link href="/mapa"
+          <Link
+            href={activeTab === 'all' ? '/mapa' : `/mapa?cat=${activeTab}`}
             className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#C9A84C] hover:bg-[#A07830] text-white font-semibold rounded-xl transition-all shadow-lg shadow-[#C9A84C]/20"
           >
             {t('dest_cta')}

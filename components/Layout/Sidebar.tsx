@@ -5,6 +5,7 @@ import { useT } from '@/lib/translations'
 import { POIS, CAT_CONFIG } from '@/data/pois'
 import {
   Globe2, Leaf, Waves, Building2, Landmark, Drum,
+  Wind, Mountain,
   Star, MapPin, ChevronRight, ChevronLeft, Search,
 } from 'lucide-react'
 
@@ -15,6 +16,8 @@ const CAT_ICONS: Record<string, React.ReactNode> = {
   cidade:   <Building2 size={13} strokeWidth={1.8} />,
   historia: <Landmark  size={13} strokeWidth={1.8} />,
   cultura:  <Drum      size={13} strokeWidth={1.8} />,
+  surf:     <Wind      size={13} strokeWidth={1.8} />,
+  aventura: <Mountain  size={13} strokeWidth={1.8} />,
 }
 
 const POI_ICONS: Record<string, React.ReactNode> = {
@@ -23,19 +26,23 @@ const POI_ICONS: Record<string, React.ReactNode> = {
   cidade:   <Building2 size={15} strokeWidth={1.6} />,
   historia: <Landmark  size={15} strokeWidth={1.6} />,
   cultura:  <Drum      size={15} strokeWidth={1.6} />,
+  surf:     <Wind      size={15} strokeWidth={1.6} />,
+  aventura: <Mountain  size={15} strokeWidth={1.6} />,
 }
 
 export default function Sidebar() {
   const { activeCat, setActiveCat, search, selectedPOI, setSelectedPOI, sideCollapsed, setSideCollapsed, language } = useApp()
   const t = useT()
 
-  const CAT_LABEL_KEY: Record<string, 'cat_all' | 'cat_natureza' | 'cat_praia' | 'cat_cidade' | 'cat_historia' | 'cat_cultura'> = {
+  const CAT_LABEL_KEY: Record<string, 'cat_all' | 'cat_natureza' | 'cat_praia' | 'cat_cidade' | 'cat_historia' | 'cat_cultura' | 'cat_surf' | 'cat_aventura'> = {
     all:      'cat_all',
     natureza: 'cat_natureza',
     praia:    'cat_praia',
     cidade:   'cat_cidade',
     historia: 'cat_historia',
     cultura:  'cat_cultura',
+    surf:     'cat_surf',
+    aventura: 'cat_aventura',
   }
 
   const filtered = POIS.filter(p =>

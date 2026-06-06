@@ -32,7 +32,7 @@ export const T = {
     dest_badge:       'Destinos em Destaque',
     dest_title:       'Maravilhas que Esperam por Si',
     dest_subtitle:    'Angola tem muito para oferecer — explore os destinos mais fascinantes do país.',
-    dest_cta:         'Ver todos os 20 destinos no mapa interactivo →',
+    dest_cta:         'Ver todos os 38 destinos no mapa interactivo →',
     dest_best_season: 'Melhor época:',
     dest_view_map:    'Ver no mapa interactivo →',
     dest_view_map_s:  'Ver no mapa →',
@@ -115,6 +115,8 @@ export const T = {
     cat_cidade:       'Cidades',
     cat_historia:     'História',
     cat_cultura:      'Cultura',
+    cat_surf:         'Surf',
+    cat_aventura:     'Aventura',
 
     // StatsBar
     bar_dests:        'Destinos',
@@ -172,7 +174,7 @@ export const T = {
     dest_badge:       'Featured Destinations',
     dest_title:       'Wonders Waiting for You',
     dest_subtitle:    'Angola has so much to offer — explore the most fascinating destinations in the country.',
-    dest_cta:         'See all 20 destinations on the interactive map →',
+    dest_cta:         'See all 38 destinations on the interactive map →',
     dest_best_season: 'Best season:',
     dest_view_map:    'View on interactive map →',
     dest_view_map_s:  'View on map →',
@@ -255,6 +257,8 @@ export const T = {
     cat_cidade:       'Cities',
     cat_historia:     'History',
     cat_cultura:      'Culture',
+    cat_surf:         'Surf',
+    cat_aventura:     'Adventure',
 
     // StatsBar
     bar_dests:        'Destinations',

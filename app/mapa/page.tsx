@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import Header    from '@/components/Layout/Header'
 import Sidebar   from '@/components/Layout/Sidebar'
@@ -6,6 +7,7 @@ import MapWrapper from '@/components/Map/MapWrapper'
 import AIChat    from '@/components/AI/AIChat'
 import Viewer360 from '@/components/View360/Viewer360'
 import VistaReal from '@/components/VistaReal/VistaReal'
+import MapaInit  from '@/components/Mapa/MapaInit'
 
 export const metadata: Metadata = {
   title: 'Angola360 — Mapa Interactivo',
@@ -15,6 +17,9 @@ export const metadata: Metadata = {
 export default function MapaPage() {
   return (
     <main className="flex flex-col h-screen overflow-hidden bg-[#080d18]">
+      <Suspense fallback={null}>
+        <MapaInit />
+      </Suspense>
       <Header />
       <div className="flex flex-1 overflow-hidden relative">
         <Sidebar />

@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useApp } from '@/lib/store'
 import { useT } from '@/lib/translations'
+import { useTTS } from '@/hooks/useTTS'
+import VoiceButton from './VoiceButton'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -20,6 +22,7 @@ export default function AIChat() {
   const inputRef  = useRef<HTMLInputElement>(null)
 
   const SUGGESTIONS = [t('ai_s1'), t('ai_s2'), t('ai_s3'), t('ai_s4')]
+  const { speak, stop, speaking, muted, toggleMute, activeIndex } = useTTS()
 
   useEffect(() => {
     if (chatOpen) setTimeout(() => inputRef.current?.focus(), 200)
@@ -63,7 +66,11 @@ export default function AIChat() {
 
       const readChunk = () => {
         reader?.read().then(({ done, value }) => {
-          if (done) { setStreaming(false); return }
+          if (done) {
+            setStreaming(false)
+            // speak(text, newMessages.length) // descomenta para auto-falar
+            return
+          }
           const chunk = decoder.decode(value)
           const lines = chunk.split('\n')
           for (const line of lines) {
@@ -115,15 +122,36 @@ export default function AIChat() {
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setChatOpen(false)}
-              className="w-7 h-7 rounded-full bg-white/[0.05] hover:bg-white/10 flex items-center justify-center text-[#8A9BB0] hover:text-[#F0EDE6] transition-all"
-              aria-label="Close"
-            >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M1 1 L9 9 M9 1 L1 9"/>
-              </svg>
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={toggleMute}
+                title={muted ? 'Activar voz' : 'Desactivar voz'}
+                className="w-7 h-7 rounded-full bg-white/[0.05] hover:bg-white/10 flex items-center justify-center transition-all"
+                style={{ color: muted ? '#4A5568' : '#8A9BB0' }}
+              >
+                {muted ? (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                    <line x1="23" y1="9" x2="17" y2="15"/>
+                    <line x1="17" y1="9" x2="23" y2="15"/>
+                  </svg>
+                ) : (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  </svg>
+                )}
+              </button>
+              <button
+                onClick={() => { stop(); setChatOpen(false) }}
+                className="w-7 h-7 rounded-full bg-white/[0.05] hover:bg-white/10 flex items-center justify-center text-[#8A9BB0] hover:text-[#F0EDE6] transition-all"
+                aria-label="Close"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M1 1 L9 9 M9 1 L1 9"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -154,7 +182,7 @@ export default function AIChat() {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[12px] leading-relaxed ${
+                  className={`group max-w-[85%] px-3.5 py-2.5 rounded-2xl text-[12px] leading-relaxed ${
                     m.role === 'user'
                       ? 'bg-[#C9A84C]/15 border border-[#C9A84C]/25 text-[#F0EDE6] rounded-br-sm'
                       : 'bg-white/[0.04] border border-white/08 text-[#C8C4BC] rounded-bl-sm'
@@ -163,6 +191,19 @@ export default function AIChat() {
                   {m.content}
                   {m.role === 'assistant' && streaming && i === messages.length - 1 && (
                     <span className="inline-block w-0.5 h-3.5 bg-[#C9A84C] ml-0.5 animate-pulse" />
+                  )}
+                  {m.role === 'assistant' && !streaming && m.content && (
+                    <div className="flex justify-end mt-1">
+                      <VoiceButton
+                        text={m.content}
+                        index={i}
+                        onSpeak={speak}
+                        onStop={stop}
+                        isActive={activeIndex === i}
+                        isSpeaking={speaking}
+                        muted={muted}
+                      />
+                    </div>
                   )}
                 </div>
               </div>
