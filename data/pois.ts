@@ -142,7 +142,7 @@ export const POIS: POI[] = [
     tags: ['Deserto', 'Welwitschia', 'Oryx', 'Namibe selvagem'],
     tags_en: ['Desert', 'Welwitschia', 'Oryx', 'Wild Namibe'],
     coordenadas: '16°42\'S 12°00\'E',
-    foto: '/iona.jpeg',
+    foto: '/IONA.jpeg',
     foto360: 'https://pannellum.org/images/cerro-toco-0.jpg',
   },
   {
