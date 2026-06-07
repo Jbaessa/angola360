@@ -22,7 +22,9 @@ export default function AIChat() {
   const inputRef  = useRef<HTMLInputElement>(null)
 
   const SUGGESTIONS = [t('ai_s1'), t('ai_s2'), t('ai_s3'), t('ai_s4')]
-  const { speak, stop, speaking, muted, toggleMute, activeIndex } = useTTS()
+  const { speak, stop, speaking, muted, toggleMute, activeIndex } = useTTS({
+    lang: language === 'en' ? 'en-GB' : 'pt-PT',
+  })
 
   useEffect(() => {
     if (chatOpen) setTimeout(() => inputRef.current?.focus(), 200)

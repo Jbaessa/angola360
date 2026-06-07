@@ -60,20 +60,23 @@ function speakWebSpeech(text: string, config: TTSConfig): void {
   }
 
   const chunks = splitTextIntoChunks(text, 180)
+  const lang = config.lang ?? 'pt-PT'
+  const langPrefix = lang.split('-')[0]
 
   const speakChunk = (index: number) => {
     if (index >= chunks.length) return
     const utterance = new SpeechSynthesisUtterance(chunks[index])
-    utterance.lang = config.lang ?? 'pt-PT'
+    utterance.lang = lang
     utterance.rate = config.rate ?? 0.95
     utterance.pitch = config.pitch ?? 1.0
 
     const voices = window.speechSynthesis.getVoices()
-    const ptVoice =
-      voices.find(v => v.lang.startsWith('pt-PT') || v.lang.startsWith('pt_PT')) ??
-      voices.find(v => v.lang.startsWith('pt')) ??
+    const voice =
+      voices.find(v => v.lang === lang) ??
+      voices.find(v => v.lang.startsWith(lang)) ??
+      voices.find(v => v.lang.startsWith(langPrefix)) ??
       null
-    if (ptVoice) utterance.voice = ptVoice
+    if (voice) utterance.voice = voice
 
     utterance.onend = () => speakChunk(index + 1)
     utterance.onerror = e => console.error('TTS error:', e)

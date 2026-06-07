@@ -5,6 +5,7 @@ import { speakText, stopSpeaking, isSpeaking, TTSEngine } from '@/lib/tts'
 
 export interface UseTTSOptions {
   engine?: TTSEngine
+  lang?: string
 }
 
 export function useTTS(options: UseTTSOptions = {}) {
@@ -14,6 +15,7 @@ export function useTTS(options: UseTTSOptions = {}) {
 
   const engine: TTSEngine = options.engine ?? 'webspeech'
   const elevenLabsKey = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY
+  const lang = options.lang ?? 'pt-PT'
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,14 +33,14 @@ export function useTTS(options: UseTTSOptions = {}) {
         engine: elevenLabsKey ? 'elevenlabs' : engine,
         elevenLabsKey,
         voiceId: process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID ?? 'EXAVITQu4vr4xnSDxMaL',
-        lang: 'pt-PT',
+        lang,
         rate: 0.92,
         pitch: 1.0,
       })
       setSpeaking(false)
       setActiveIndex(null)
     },
-    [muted, engine, elevenLabsKey]
+    [muted, engine, elevenLabsKey, lang]
   )
 
   const stop = useCallback(() => {
